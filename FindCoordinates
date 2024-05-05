@@ -1,1 +1,45 @@
+import os
+import numpy as np
+from collections import deque
 
+def find_connected_components(matrix):
+    """
+    Идентифицирует клетки в матрице.
+
+    Args:
+    - matrix (numpy.ndarray): Матрица.
+
+    Returns:
+    - list of tuples: Список клеток, где каждая клетка представлена строкой и столбцом.
+    """
+    def is_valid_neighbor(row, col):
+        return 0 <= row < matrix.shape[0] and 0 <= col < matrix.shape[1] and matrix[row, col] == 1
+
+    def bfs(start):
+        queue = deque([start])
+        visited.add(start)
+        component_rows, component_cols = [], []
+
+        while queue:
+            row, col = queue.popleft()
+            component_rows.append(row)
+            component_cols.append(col)
+
+            for dr, dc in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
+                new_row, new_col = row + dr, col + dc
+                if is_valid_neighbor(new_row, new_col) and (new_row, new_col) not in visited:
+                    queue.append((new_row, new_col))
+                    visited.add((new_row, new_col))
+
+        return component_rows, component_cols
+
+    visited = set()
+    components = []
+
+    for row in range(matrix.shape[0]):
+        for col in range(matrix.shape[1]):
+            if matrix[row, col] == 1 and (row, col) not in visited:
+                component_rows, component_cols = bfs((row, col))
+                components.append((component_rows, component_cols))
+
+    return components
