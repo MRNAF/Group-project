@@ -32,3 +32,38 @@ def move_cell(matrix, cell_info):
     # Если не найдено подходящее место, возвращаем клетку на старое место
     matrix[row_start:row_start + height, col_start:col_start + width] = 1
     return row_start, col_start, width, height
+
+def random_matrix(matrix, num_cells, prev_cells):
+    """ Использует текущую матрицу для перемещения клеток. """
+    if prev_cells is None:
+        cells = []
+        while len(cells) < num_cells:
+            width = random.randint(2, 5)
+            height = random.randint(2, 5)
+            row_start = random.randint(1, matrix.shape[0] - height - 1)
+            col_start = random.randint(1, matrix.shape[1] - width - 1)
+            if generate_cell(matrix, row_start, col_start, width, height):
+                cells.append((row_start, col_start, width, height))
+    else:
+        cells = [move_cell(matrix, cell_info) for cell_info in prev_cells]
+
+    return matrix, cells
+
+
+def save_matrix(matrix, filename):
+    """ Сохраняет матрицу в текстовый файл. """
+    np.savetxt(filename, matrix, fmt='%d')
+
+def generate_matrix_series(matrix_size, num_matrices, directory):
+    """ Генерирует серию матриц. """
+    matrix = np.zeros(matrix_size)
+    prev_cells = None
+    num_cells = 5  # Фиксированное количество клеток
+
+    for i in range(num_matrices):
+        if i == 0 or prev_cells is None:
+            matrix = np.zeros(matrix_size)  # Начинаем с пустой матрицы для первой итерации
+        matrix, prev_cells = random_matrix(matrix, num_cells, prev_cells)
+        filename = f"{directory}/matrix_{i + 1}.txt"
+        save_matrix(matrix, filename)
+
