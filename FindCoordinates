@@ -58,3 +58,27 @@ def find_component_center(component):
     row_center = sum(component_rows) // len(component_rows)
     col_center = sum(component_cols) // len(component_cols)
     return row_center, col_center
+
+def process_matrices(directory):
+    """
+    Обрабатывает матрицы из указанной директории.
+
+    Args:
+    - directory (str): Путь к директории.
+    """
+    filenames = sorted(os.listdir(directory))  # Сортируем список файлов по имени
+    for filename in filenames:
+        filepath = os.path.join(directory, filename)
+        matrix = np.loadtxt(filepath)
+
+        print(f"\nПолучаем матрицу из файла: {filename}")
+
+        components = find_connected_components(matrix)
+        print("Координаты центров каждой клетки:")
+        for i, component in enumerate(components):
+            center = find_component_center(component)
+            print(f"Cell {i + 1}: {center}")
+
+if __name__ == "__main__":
+    directory = 'matrix_series'
+    process_matrices(directory)
