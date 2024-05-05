@@ -43,3 +43,18 @@ def find_connected_components(matrix):
                 components.append((component_rows, component_cols))
 
     return components
+
+def find_component_center(component):
+    """
+    Находит координаты центра клектки.
+
+    Args:
+    - component (tuple of lists): Списки координат клетки.
+
+    Returns:
+    - tuple: Координаты центра клетки.
+    """
+    component_rows, component_cols = component
+    row_center = sum(component_rows) // len(component_rows)
+    col_center = sum(component_cols) // len(component_cols)
+    return row_center, col_center
