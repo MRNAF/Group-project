@@ -1,1 +1,9 @@
+import numpy as np
+import random
 
+def generate_cell(matrix, row_start, col_start, width, height):
+    """ Генерирует клетку в матрице, окружённую нулями """
+    if np.any(matrix[row_start - 1:row_start + height + 1, col_start - 1:col_start + width + 1] != 0):
+        return False  # Если невозможно разместить клетку, возвращает False
+    matrix[row_start:row_start + height, col_start:col_start + width] = 1
+    return True
