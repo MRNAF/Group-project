@@ -7,3 +7,28 @@ def generate_cell(matrix, row_start, col_start, width, height):
         return False  # Если невозможно разместить клетку, возвращает False
     matrix[row_start:row_start + height, col_start:col_start + width] = 1
     return True
+
+
+def move_cell(matrix, cell_info):
+    """ Перемещает клетку. Если перемещение невозможно - оставляет на том же месте. """
+    row_start, col_start, width, height = cell_info
+    # Сначала очищаем текущее местоположение клетки
+    matrix[row_start:row_start + height, col_start:col_start + width] = 0
+
+    possible_moves = [(dr, dc) for dr in range(-height // 5, height // 5 + 1)
+                      for dc in range(-width // 5, width // 5 + 1)]
+    random.shuffle(possible_moves)  # Перемешиваем возможные направления перемещения
+
+    for dr, dc in possible_moves:
+        new_row_start = max(1, min(matrix.shape[0] - height - 1, row_start + dr))
+        new_col_start = max(1, min(matrix.shape[1] - width - 1, col_start + dc))
+        # Проверяем новое местоположение
+        if np.all(matrix[new_row_start - 1:new_row_start + height + 1,
+                         new_col_start - 1:new_col_start + width + 1] == 0):
+            # Заполняем новую позицию
+            matrix[new_row_start:new_row_start + height, new_col_start:new_col_start + width] = 1
+            return new_row_start, new_col_start, width, height
+
+    # Если не найдено подходящее место, возвращаем клетку на старое место
+    matrix[row_start:row_start + height, col_start:col_start + width] = 1
+    return row_start, col_start, width, height
